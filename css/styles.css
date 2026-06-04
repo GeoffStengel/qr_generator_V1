@@ -1,0 +1,438 @@
+/* ================================
+   GLOBAL RESET START
+================================ */
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  background: linear-gradient(135deg, #eef2ff, #f8fafc);
+  color: #111827;
+}
+
+/* ================================
+   GLOBAL RESET END
+================================ */
+
+
+/* ================================
+   HEADER / NAV START
+================================ */
+
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 6%;
+  background: rgba(255, 255, 255, 0.86);
+  backdrop-filter: blur(14px);
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.logo {
+  font-weight: 900;
+  font-size: 1.25rem;
+  color: #111827;
+  text-decoration: none;
+  letter-spacing: -0.03em;
+}
+
+.nav {
+  display: flex;
+  gap: 22px;
+}
+
+.nav a {
+  color: #374151;
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 0.95rem;
+}
+
+.nav a:hover {
+  color: #4f46e5;
+}
+
+.hamburger {
+  display: none;
+  border: 0;
+  background: #111827;
+  color: white;
+  padding: 8px 12px;
+  border-radius: 10px;
+  font-size: 1.15rem;
+  cursor: pointer;
+}
+
+/* ================================
+   HEADER / NAV END
+================================ */
+
+
+/* ================================
+   MAIN LAYOUT START
+================================ */
+
+.hero {
+  display: grid;
+  grid-template-columns: minmax(420px, 0.95fr) minmax(360px, 1.05fr);
+  gap: 24px;
+  padding: 28px 6%;
+  align-items: start;
+}
+
+.panel {
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 22px;
+  padding: 22px;
+  box-shadow: 0 22px 55px rgba(15, 23, 42, 0.08);
+}
+
+.controls {
+  position: sticky;
+  top: 86px;
+}
+
+.preview {
+  text-align: center;
+}
+
+/* ================================
+   MAIN LAYOUT END
+================================ */
+
+
+/* ================================
+   TYPOGRAPHY START
+================================ */
+
+h1 {
+  margin: 0;
+  font-size: clamp(1.75rem, 4vw, 3.25rem);
+  line-height: 0.95;
+  letter-spacing: -0.06em;
+}
+
+h2 {
+  margin: 0 0 12px;
+  font-size: 1.25rem;
+}
+
+p {
+  margin: 8px 0 0;
+  color: #6b7280;
+  line-height: 1.5;
+}
+
+/* ================================
+   TYPOGRAPHY END
+================================ */
+
+
+/* ================================
+   FORM CONTROLS START
+================================ */
+
+label {
+  display: grid;
+  gap: 6px;
+  margin-top: 12px;
+  font-weight: 800;
+  font-size: 0.9rem;
+  color: #1f2937;
+}
+
+input,
+select {
+  width: 100%;
+  min-height: 42px;
+  padding: 10px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 12px;
+  background: #fff;
+  color: #111827;
+  font: inherit;
+}
+
+input[type="color"] {
+  padding: 5px;
+  cursor: pointer;
+}
+
+input[type="file"] {
+  padding: 9px;
+  font-size: 0.88rem;
+}
+
+input[type="range"] {
+  padding: 0;
+  min-height: 34px;
+  cursor: pointer;
+}
+
+input:focus,
+select:focus {
+  outline: 3px solid #c7d2fe;
+  border-color: #6366f1;
+}
+
+/* ================================
+   FORM CONTROLS END
+================================ */
+
+
+/* ================================
+   CONTROL GRID START
+================================ */
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+/* Use this class if you want 3 compact controls in one row later */
+.grid-3 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+.checkbox {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 12px;
+  padding: 10px 12px;
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+}
+
+.checkbox input {
+  width: auto;
+  min-height: auto;
+}
+
+/* ================================
+   CONTROL GRID END
+================================ */
+
+
+/* ================================
+   BUTTONS / ACTIONS START
+================================ */
+
+.actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+button {
+  border: 0;
+  background: #4f46e5;
+  color: white;
+  min-height: 44px;
+  padding: 11px 14px;
+  border-radius: 13px;
+  font-weight: 900;
+  cursor: pointer;
+  transition: transform 0.15s ease, filter 0.15s ease, box-shadow 0.15s ease;
+}
+
+button:hover {
+  filter: brightness(0.96);
+  transform: translateY(-1px);
+  box-shadow: 0 10px 24px rgba(79, 70, 229, 0.22);
+}
+
+button:active {
+  transform: translateY(0);
+  box-shadow: none;
+}
+
+button.secondary {
+  background: #111827;
+}
+
+button.ghost {
+  background: white;
+  color: #111827;
+  border: 1px solid #d1d5db;
+}
+
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* ================================
+   BUTTONS / ACTIONS END
+================================ */
+
+
+/* ================================
+   STATUS MESSAGE START
+================================ */
+
+.message {
+  min-height: 22px;
+  margin-top: 12px;
+  font-size: 0.92rem;
+  font-weight: 800;
+}
+
+.message.error {
+  color: #dc2626;
+}
+
+.message.success {
+  color: #16a34a;
+}
+
+/* ================================
+   STATUS MESSAGE END
+================================ */
+
+
+/* ================================
+   QR PREVIEW START
+================================ */
+
+.qr-preview {
+  display: grid;
+  place-items: center;
+  min-height: 520px;
+  border: 2px dashed #d1d5db;
+  border-radius: 20px;
+  overflow: auto;
+  padding: 22px;
+  background:
+    radial-gradient(circle at top, rgba(99, 102, 241, 0.08), transparent 36%),
+    #f9fafb;
+}
+
+.qr-preview canvas,
+.qr-preview svg {
+  max-width: 100%;
+  height: auto;
+  border-radius: 18px;
+  box-shadow: 0 18px 45px rgba(15, 23, 42, 0.15);
+}
+
+/* ================================
+   QR PREVIEW END
+================================ */
+
+
+/* ================================
+   ABOUT SECTION START
+================================ */
+
+.about {
+  padding: 10px 6% 50px;
+}
+
+/* ================================
+   ABOUT SECTION END
+================================ */
+
+
+/* ================================
+   TABLET RESPONSIVE START
+================================ */
+
+@media (max-width: 1020px) {
+  .hero {
+    grid-template-columns: 1fr;
+  }
+
+  .controls {
+    position: static;
+  }
+
+  .qr-preview {
+    min-height: 420px;
+  }
+}
+
+/* ================================
+   TABLET RESPONSIVE END
+================================ */
+
+
+/* ================================
+   MOBILE RESPONSIVE START
+================================ */
+
+@media (max-width: 780px) {
+  .site-header {
+    padding: 14px 5%;
+  }
+
+  .hamburger {
+    display: block;
+  }
+
+  .nav {
+    position: absolute;
+    top: 64px;
+    right: 5%;
+    left: 5%;
+    display: none;
+    flex-direction: column;
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 18px;
+    padding: 18px;
+    box-shadow: 0 16px 45px rgba(15, 23, 42, 0.12);
+  }
+
+  .nav.open {
+    display: flex;
+  }
+
+  .hero {
+    gap: 18px;
+    padding: 22px 5%;
+  }
+
+  .panel {
+    padding: 18px;
+    border-radius: 18px;
+  }
+
+  .grid,
+  .grid-3,
+  .actions {
+    grid-template-columns: 1fr;
+  }
+
+  h1 {
+    font-size: 2.2rem;
+  }
+
+  .qr-preview {
+    min-height: 320px;
+    padding: 16px;
+  }
+}
+
+/* ================================
+   MOBILE RESPONSIVE END
+================================ */

@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- ================================
+       META / PAGE SETUP START
+  ================================= -->
+
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Sacred QR Codes</title>
+
+  <!-- Main stylesheet -->
+  <link rel="stylesheet" href="css/styles.css" />
+
+  <!-- ================================
+       META / PAGE SETUP END
+  ================================= -->
+</head>
+
+<body>
+  <!-- ================================
+       HEADER / NAVIGATION START
+  ================================= -->
+
+  <header class="site-header">
+    <a class="logo" href="#generator">Sacred QR Codes</a>
+
+    <button class="hamburger" id="hamburger" type="button" aria-label="Toggle navigation menu">
+      ☰
+    </button>
+
+    <nav class="nav" id="nav" aria-label="Main navigation">
+      <a href="#generator">Generator</a>
+      <a href="#download">Download</a>
+      <a href="#about">About</a>
+    </nav>
+  </header>
+
+  <!-- ================================
+       HEADER / NAVIGATION END
+  ================================= -->
+
+
+  <!-- ================================
+       MAIN APP START
+  ================================= -->
+
+  <main class="hero" id="generator">
+    <!-- ================================
+         GENERATOR CONTROLS START
+    ================================= -->
+
+    <section class="panel controls" aria-labelledby="generatorTitle">
+      <h1 id="generatorTitle">QR Code Generator</h1>
+      <p>Create custom downloadable QR codes as PNG, JPG, or SVG.</p>
+
+      <!-- URL input -->
+      <label>
+        URL
+        <input
+          id="urlInput"
+          type="url"
+          placeholder="https://example.com"
+          autocomplete="url"
+        />
+      </label>
+
+      <!-- Size and file format controls -->
+      <div class="grid">
+        <label>
+          Size
+          <input
+            id="sizeInput"
+            type="number"
+            min="160"
+            max="1200"
+            value="420"
+          />
+        </label>
+
+        <label>
+          Format
+          <select id="formatInput">
+            <option value="png">PNG</option>
+            <option value="jpg">JPG</option>
+            <option value="svg">SVG</option>
+          </select>
+        </label>
+      </div>
+
+      <!-- Color controls -->
+      <div class="grid">
+        <label>
+          QR Color
+          <input id="darkColorInput" type="color" value="#111827" />
+        </label>
+
+        <label>
+          Background
+          <input id="lightColorInput" type="color" value="#ffffff" />
+        </label>
+      </div>
+
+      <!-- Style controls -->
+      <div class="grid">
+        <label>
+          Dot Style
+          <select id="dotStyleInput">
+            <option value="square">Square</option>
+            <option value="rounded" selected>Rounded</option>
+            <option value="dots">Dots</option>
+            <option value="classy">Classy</option>
+            <option value="classy-rounded">Classy Rounded</option>
+            <option value="extra-rounded">Extra Rounded</option>
+          </select>
+        </label>
+
+        <label>
+          Corner Style
+          <select id="cornerStyleInput">
+            <option value="square">Square</option>
+            <option value="dot">Dot</option>
+            <option value="extra-rounded" selected>Extra Rounded</option>
+          </select>
+        </label>
+      </div>
+
+      <!-- Rounded toggle -->
+      <label class="checkbox">
+        <input id="roundedInput" type="checkbox" checked />
+        Rounded edges
+      </label>
+
+      <!-- Logo controls -->
+      <div class="grid">
+        <label>
+          Center Logo
+          <input
+            id="logoInput"
+            type="file"
+            accept="image/png, image/jpeg, image/svg+xml"
+          />
+        </label>
+
+        <label>
+          Logo Size
+          <input
+            id="logoSizeInput"
+            type="range"
+            min="12"
+            max="25"
+            value="20"
+          />
+        </label>
+      </div>
+
+      <!-- Action buttons -->
+      <div class="actions" id="download">
+        <button id="generateBtn" type="button">Generate QR</button>
+        <button id="downloadBtn" class="secondary" type="button">Download</button>
+        <button id="copyBtn" class="ghost" type="button">Copy Image</button>
+      </div>
+
+      <!-- Status message -->
+      <p id="message" class="message" aria-live="polite"></p>
+    </section>
+
+    <!-- ================================
+         GENERATOR CONTROLS END
+    ================================= -->
+
+
+    <!-- ================================
+         QR PREVIEW START
+    ================================= -->
+
+    <section class="panel preview" aria-labelledby="previewTitle">
+      <h2 id="previewTitle">Preview</h2>
+      <div id="qrPreview" class="qr-preview"></div>
+    </section>
+
+    <!-- ================================
+         QR PREVIEW END
+    ================================= -->
+  </main>
+
+  <!-- ================================
+       MAIN APP END
+  ================================= -->
+
+
+  <!-- ================================
+       ABOUT SECTION START
+  ================================= -->
+
+  <section class="about" id="about">
+    <h2>About</h2>
+    <p>
+      Client-side QR generator. Your URL stays in your browser.
+    </p>
+  </section>
+
+  <!-- ================================
+       ABOUT SECTION END
+  ================================= -->
+
+
+  <!-- ================================
+       SCRIPTS START
+  ================================= -->
+
+  <!-- QR styling library -->
+  <script src="https://cdn.jsdelivr.net/npm/qr-code-styling@1.9.2/lib/qr-code-styling.js"></script>
+
+  <!-- Main app logic -->
+  <script src="js/app.js"></script>
+
+  <!-- ================================
+       SCRIPTS END
+  ================================= -->
+</body>
+</html>

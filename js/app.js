@@ -8,6 +8,7 @@ const formatInput = document.getElementById("formatInput");
 const darkColorInput = document.getElementById("darkColorInput");
 const lightColorInput = document.getElementById("lightColorInput");
 const roundedInput = document.getElementById("roundedInput");
+const frameRoundedInput = document.getElementById("frameRoundedInput");
 
 const logoInput = document.getElementById("logoInput");
 const logoSizeInput = document.getElementById("logoSizeInput");
@@ -66,6 +67,7 @@ copyBtn.addEventListener("click", copyQrImage);
   darkColorInput,
   lightColorInput,
   roundedInput,
+  frameRoundedInput,
   logoSizeInput,
   dotStyleInput,
   cornerStyleInput
@@ -92,6 +94,7 @@ function generateQr() {
     const settings = getSettings();
 
     qrPreview.innerHTML = "";
+    applyFrameStyle(settings);
 
     qrCode = new QRCodeStyling({
       width: settings.size,
@@ -99,7 +102,7 @@ function generateQr() {
       type: "canvas",
       data: settings.url,
       image: logoDataUrl || undefined,
-      margin: 12,
+      margin: 14,
 
       qrOptions: {
         errorCorrectionLevel: "H"
@@ -116,7 +119,7 @@ function generateQr() {
       },
 
       cornersDotOptions: {
-        type: settings.cornerStyle === "dot" ? "dot" : "square",
+        type: settings.cornerDotStyle,
         color: settings.darkColor
       },
 
@@ -127,7 +130,8 @@ function generateQr() {
       imageOptions: {
         crossOrigin: "anonymous",
         margin: 8,
-        imageSize: settings.logoSize
+        imageSize: settings.logoSize,
+        hideBackgroundDots: true
       }
     });
 
@@ -143,6 +147,22 @@ function generateQr() {
 
 /* ================================
    QR GENERATION END
+================================ */
+
+
+/* ================================
+   FRAME STYLE START
+================================ */
+
+function applyFrameStyle(settings) {
+  qrPreview.classList.toggle("frame-rounded", settings.roundedFrame);
+  qrPreview.classList.toggle("frame-square", !settings.roundedFrame);
+
+  qrPreview.style.setProperty("--qr-bg-color", settings.lightColor);
+}
+
+/* ================================
+   FRAME STYLE END
 ================================ */
 
 
@@ -222,12 +242,17 @@ function downloadQr() {
 
 async function copyQrImage() {
   try {
-    if (!qrPreview.querySelector("canvas")) {
+    const canvas = qrPreview.querySelector("canvas");
+
+    if (!canvas) {
       setMessage("Generate a QR code first.", "error");
       return;
     }
 
-    const canvas = qrPreview.querySelector("canvas");
+    if (!navigator.clipboard || !window.ClipboardItem) {
+      setMessage("Copy image is not supported in this browser.", "error");
+      return;
+    }
 
     canvas.toBlob(async (blob) => {
       if (!blob) {
@@ -263,6 +288,7 @@ function debounceGenerate() {
 function getSettings() {
   const url = getValidUrl(urlInput.value);
   const size = clamp(Number(sizeInput.value) || 420, 160, 1200);
+  const roundedStyling = roundedInput.checked;
 
   return {
     url,
@@ -270,8 +296,10 @@ function getSettings() {
     darkColor: darkColorInput.value,
     lightColor: lightColorInput.value,
     logoSize: clamp(Number(logoSizeInput.value) / 100, 0.12, 0.25),
-    dotStyle: roundedInput.checked ? dotStyleInput.value : "square",
-    cornerStyle: roundedInput.checked ? cornerStyleInput.value : "square"
+    dotStyle: roundedStyling ? dotStyleInput.value : "square",
+    cornerStyle: roundedStyling ? cornerStyleInput.value : "square",
+    cornerDotStyle: roundedStyling && cornerStyleInput.value === "dot" ? "dot" : "square",
+    roundedFrame: frameRoundedInput.checked
   };
 }
 
@@ -298,7 +326,7 @@ function setLoading(isLoading) {
   generateBtn.disabled = isLoading;
   downloadBtn.disabled = isLoading;
   copyBtn.disabled = isLoading;
-  generateBtn.textContent = isLoading ? "Generating..." : "Generate QR";
+  generateBtn.textContent = isLoading ? "Generating..." : "Generate";
 }
 
 function clamp(value, min, max) {

@@ -333,6 +333,17 @@ button:disabled {
   object-fit: contain;
   border-radius: 22px;
   box-shadow: 0 28px 60px rgba(15, 23, 42, 0.22);
+
+
+    border-radius: 40px;
+
+  padding: 18px;
+
+  background: white;
+
+  box-shadow:
+    0 28px 60px rgba(15,23,42,.22);
+
 }
 
 /* ================================
@@ -351,6 +362,17 @@ button:disabled {
 /* ================================
    ABOUT END
 ================================ */
+
+.qr-preview.frame-rounded canvas,
+.qr-preview.frame-rounded svg {
+  border-radius: 34px;
+}
+
+.qr-preview.frame-square canvas,
+.qr-preview.frame-square svg {
+  border-radius: 0;
+}
+
 
 
 /* ================================
@@ -470,7 +492,8 @@ button:disabled {
 
   .qr-preview canvas,
   .qr-preview svg {
-    width: min(82vw, 310px) !important;
+  width: min(76vw, 280px) !important;
+  height: auto !important;
   }
 }
 

@@ -1,33 +1,21 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <!-- ================================
-       META / PAGE SETUP START
-  ================================= -->
-
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
-  <title>QR Generator ⛟</title>
-
-  <!-- Main stylesheet -->
+  <meta name="description" content="Create custom QR codes with colors, frames, logo uploads, and export-ready PNG or JPG downloads." />
+  <title>QR Generator</title>
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" />
   <link rel="stylesheet" href="css/styles.css" />
-
-  <!-- ================================
-       META / PAGE SETUP END
-  ================================= -->
 </head>
-
 <body>
-  <!-- ================================
-       HEADER / NAVIGATION START
-  ================================= -->
-
   <header class="site-header">
-    <a class="logo" href="#generator">QR Generator ⛟</a>
+    <a class="logo" href="#generator" aria-label="QR Generator home">QR Generator</a>
 
-    <button class="hamburger" id="hamburger" type="button" aria-label="Toggle navigation menu">
-      ☰
+    <button class="hamburger" id="hamburger" type="button" aria-label="Toggle navigation menu" aria-expanded="false" aria-controls="nav">
+      <span></span>
+      <span></span>
+      <span></span>
     </button>
 
     <nav class="nav" id="nav" aria-label="Main navigation">
@@ -37,192 +25,193 @@
     </nav>
   </header>
 
-  <!-- ================================
-       HEADER / NAVIGATION END
-  ================================= -->
-
-
-  <!-- ================================
-       MAIN APP START
-  ================================= -->
-
-  <main class="hero" id="generator">
-    <!-- ================================
-         GENERATOR CONTROLS START
-    ================================= -->
-
+  <main class="app-shell" id="generator">
     <section class="panel controls" aria-labelledby="generatorTitle">
-      <h1 id="generatorTitle">QR Code Generator</h1>
-      <p>Create custom downloadable QR codes as PNG, JPG, or SVG.</p>
+      <div class="panel-heading">
+        <p class="eyebrow">Studio</p>
+        <h1 id="generatorTitle">QR Generator</h1>
+      </div>
 
-      <!-- URL input -->
-      <label>
-        URL
-        <input
-          id="urlInput"
-          type="url"
-          placeholder="https://example.com"
-          autocomplete="url"
-        />
-      </label>
+      <button class="mini-preview" id="miniPreview" type="button" aria-label="Jump to full QR preview"></button>
 
-      <!-- Size and file format controls -->
-      <div class="grid">
-        <label>
-          Size
-          <input
-            id="sizeInput"
-            type="number"
-            min="160"
-            max="1200"
-            value="420"
-          />
+      <div class="control-section content-section">
+        <label class="compact-field url-field">
+          URL
+          <input id="urlInput" type="url" placeholder="https://example.com" autocomplete="url" inputmode="url" />
         </label>
 
-        <label>
-          Format
-          <select id="formatInput">
-            <option value="png">PNG</option>
-            <option value="jpg">JPG</option>
-            <option value="svg">SVG</option>
+        <label class="compact-field">
+          Quick Style
+          <select id="presetInput">
+            <option value="classic">Classic</option>
+            <option value="modern" selected>Modern</option>
+            <option value="sacred">Sacred</option>
+            <option value="cyberpunk">Cyberpunk</option>
+            <option value="luxury">Luxury</option>
+            <option value="nature">Nature</option>
           </select>
         </label>
       </div>
 
-      <!-- Color controls -->
-      <div class="grid">
-        <label>
-          QR Color
-          <input id="darkColorInput" type="color" value="#111827" />
-        </label>
+      <section class="control-section" aria-labelledby="appearanceTitle">
+        <h2 id="appearanceTitle">Appearance</h2>
+        <div class="control-row colors-row">
+          <label class="compact-field">
+            QR
+            <input id="darkColorInput" type="color" value="#111827" />
+          </label>
 
-        <label>
-          Background
-          <input id="lightColorInput" type="color" value="#ffffff" />
-        </label>
-      </div>
+          <label class="compact-field">
+            Background
+            <input id="lightColorInput" type="color" value="#ffffff" />
+          </label>
 
-      <!-- Style controls -->
-      <div class="grid">
-        <label>
-          Dot Style
-          <select id="dotStyleInput">
-            <option value="square">Square</option>
-            <option value="rounded" selected>Rounded</option>
-            <option value="dots">Dots</option>
-            <option value="classy">Classy</option>
-            <option value="classy-rounded">Classy Rounded</option>
-            <option value="extra-rounded">Extra Rounded</option>
-          </select>
-        </label>
+          <label class="compact-field">
+            Corner
+            <input id="cornerColorInput" type="color" value="#2563eb" />
+          </label>
+        </div>
 
-        <label>
-          Corner Style
-          <select id="cornerStyleInput">
-            <option value="square">Square</option>
-            <option value="dot">Dot</option>
-            <option value="extra-rounded" selected>Extra Rounded</option>
-          </select>
-        </label>
-      </div>
+        <div class="control-row style-row">
+          <label class="compact-field">
+            Dots
+            <select id="dotStyleInput">
+              <option value="square">Square</option>
+              <option value="rounded" selected>Rounded</option>
+              <option value="dots">Dots</option>
+              <option value="classy">Classy</option>
+              <option value="classy-rounded">Classy Rounded</option>
+              <option value="extra-rounded">Extra Rounded</option>
+            </select>
+          </label>
 
-      <!-- Rounded toggle -->
-      <label class="checkbox">
-        <input id="roundedInput" type="checkbox" checked />
-        Rounded edges
-      </label>
+          <label class="compact-field">
+            Corners
+            <select id="cornerStyleInput">
+              <option value="square">Square</option>
+              <option value="dot">Dot</option>
+              <option value="extra-rounded" selected>Extra Rounded</option>
+            </select>
+          </label>
 
-      <label class="checkbox">
-        <input id="frameRoundedInput" type="checkbox" checked />
-        Rounded Frame
-      </label>
+          <label class="checkbox inline-check">
+            <input id="roundedInput" type="checkbox" checked />
+            Rounded
+          </label>
+        </div>
+      </section>
 
-      <!-- Logo controls -->
-      <div class="grid">
-        <label>
-          Center Logo
-          <input
-            id="logoInput"
-            type="file"
-            accept="image/png, image/jpeg, image/svg+xml"
-          />
-        </label>
+      <section class="control-section" aria-labelledby="frameTitle">
+        <h2 id="frameTitle">Frame</h2>
+        <div class="control-row frame-row">
+          <label class="compact-field">
+            Style
+            <select id="frameStyleInput">
+              <option value="none">None</option>
+              <option value="rounded" selected>Rounded</option>
+              <option value="glass">Glass</option>
+              <option value="neon">Neon</option>
+              <option value="sticker">Sticker</option>
+            </select>
+          </label>
 
-        <label>
-          Logo Size
-          <input
-            id="logoSizeInput"
-            type="range"
-            min="12"
-            max="25"
-            value="20"
-          />
-        </label>
-      </div>
+          <label class="compact-field">
+            <span class="range-label">
+              Pad
+              <span id="paddingValue" class="value-pill">7%</span>
+            </span>
+            <input id="paddingInput" type="range" min="0" max="20" value="7" />
+          </label>
 
-      <!-- Action buttons -->
-      <div class="actions" id="download">
-        <button id="generateBtn" type="button">Generate QR</button>
-        <button id="downloadBtn" class="secondary" type="button">Download</button>
-        <button id="copyBtn" class="ghost" type="button">Copy Image</button>
-      </div>
+          <label class="compact-field">
+            <span class="range-label">
+              Border
+              <span id="borderThicknessValue" class="value-pill">2px</span>
+            </span>
+            <input id="borderThicknessInput" type="range" min="0" max="24" value="2" />
+          </label>
+        </div>
 
-      <!-- Status message -->
+        <div class="check-row">
+          <label class="checkbox inline-check">
+            <input id="frameRoundedInput" type="checkbox" checked />
+            Rounded frame
+          </label>
+
+          <label class="checkbox inline-check">
+            <input id="transparentInput" type="checkbox" />
+            Transparent background
+          </label>
+        </div>
+      </section>
+
+      <section class="control-section" aria-labelledby="brandingTitle">
+        <h2 id="brandingTitle">Branding</h2>
+        <div class="control-row two">
+          <label class="compact-field file-field">
+            Logo
+            <input id="logoInput" type="file" accept="image/png, image/jpeg, image/svg+xml" />
+          </label>
+
+          <label class="compact-field">
+            <span class="range-label">
+              Size
+              <span id="logoSizeValue" class="value-pill">20%</span>
+            </span>
+            <input id="logoSizeInput" type="range" min="12" max="25" value="20" />
+          </label>
+        </div>
+      </section>
+
+      <section class="control-section" aria-labelledby="exportTitle">
+        <h2 id="exportTitle">Export</h2>
+        <div class="control-row two">
+          <label class="compact-field">
+            Size
+            <input id="sizeInput" type="number" min="160" max="4096" value="420" />
+          </label>
+
+          <label class="compact-field">
+            Format
+            <select id="formatInput">
+              <option value="png">PNG</option>
+              <option value="jpg">JPG</option>
+            </select>
+          </label>
+        </div>
+      </section>
+
+      <div class="scan-score excellent" id="scanScore">Scan Quality: Excellent</div>
       <p id="message" class="message" aria-live="polite"></p>
+
+      <div class="actions" id="download">
+        <button id="downloadBtn" class="primary-action" type="button">Download</button>
+        <button id="copyBtn" class="ghost" type="button">Copy</button>
+        <button id="resetBtn" class="ghost" type="button">Reset</button>
+      </div>
     </section>
-
-    <!-- ================================
-         GENERATOR CONTROLS END
-    ================================= -->
-
-
-    <!-- ================================
-         QR PREVIEW START
-    ================================= -->
 
     <section class="panel preview" aria-labelledby="previewTitle">
-      <h2 id="previewTitle">Preview</h2>
+      <div class="preview-header">
+        <h2 id="previewTitle">Preview</h2>
+        <span class="preview-size" id="previewSize">420 px</span>
+      </div>
       <div id="qrPreview" class="qr-preview"></div>
     </section>
-
-    <!-- ================================
-         QR PREVIEW END
-    ================================= -->
   </main>
 
-  <!-- ================================
-       MAIN APP END
-  ================================= -->
+  <!--
+  <section class="about" id="about" aria-labelledby="aboutTitle">
+    <h2 id="aboutTitle">About</h2>
+    <p>Client-side QR generator. Your URL and logo stay in your browser.</p>
+  </section> -->
 
-
-  <!-- ================================
-       ABOUT SECTION START
-  ================================= -->
-
-  <section class="about" id="about">
-    <h2>About</h2>
-    <p>
-      Client-side QR generator. Your URL stays in your browser.
-    </p>
-  </section>
-
-  <!-- ================================
-       ABOUT SECTION END
-  ================================= -->
-
-
-  <!-- ================================
-       SCRIPTS START
-  ================================= -->
-
-  <!-- QR styling library -->
   <script src="https://cdn.jsdelivr.net/npm/qr-code-styling@1.9.2/lib/qr-code-styling.js"></script>
-
-  <!-- Main app logic -->
+  <script src="js/presets.js"></script>
+  <script src="js/utils.js"></script>
+  <script src="js/scanscore.js"></script>
+  <script src="js/renderer.js"></script>
+  <script src="js/export.js"></script>
   <script src="js/app.js"></script>
-
-  <!-- ================================
-       SCRIPTS END
-  ================================= -->
 </body>
 </html>

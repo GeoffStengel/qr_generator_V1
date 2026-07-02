@@ -1,64 +1,71 @@
-/* ================================
-   DOM ELEMENTS START
-================================ */
+"use strict";
 
 const urlInput = document.getElementById("urlInput");
 const sizeInput = document.getElementById("sizeInput");
 const formatInput = document.getElementById("formatInput");
+
 const darkColorInput = document.getElementById("darkColorInput");
 const lightColorInput = document.getElementById("lightColorInput");
+const cornerColorInput = document.getElementById("cornerColorInput");
+
 const roundedInput = document.getElementById("roundedInput");
 const frameRoundedInput = document.getElementById("frameRoundedInput");
+const frameStyleInput = document.getElementById("frameStyleInput");
+const transparentInput = document.getElementById("transparentInput");
 
+const presetInput = document.getElementById("presetInput");
 const logoInput = document.getElementById("logoInput");
 const logoSizeInput = document.getElementById("logoSizeInput");
 
 const dotStyleInput = document.getElementById("dotStyleInput");
 const cornerStyleInput = document.getElementById("cornerStyleInput");
 
-const generateBtn = document.getElementById("generateBtn");
 const downloadBtn = document.getElementById("downloadBtn");
 const copyBtn = document.getElementById("copyBtn");
+const resetBtn = document.getElementById("resetBtn");
 
 const qrPreview = document.getElementById("qrPreview");
 const message = document.getElementById("message");
+const scanScore = document.getElementById("scanScore");
+const previewSize = document.getElementById("previewSize");
+const miniPreview = document.getElementById("miniPreview");
 
 const hamburger = document.getElementById("hamburger");
 const nav = document.getElementById("nav");
 
-/* ================================
-   DOM ELEMENTS END
-================================ */
+const paddingInput = document.getElementById("paddingInput");
+const borderThicknessInput = document.getElementById("borderThicknessInput");
 
+const logoSizeValue = document.getElementById("logoSizeValue");
+const paddingValue = document.getElementById("paddingValue");
+const borderThicknessValue = document.getElementById("borderThicknessValue");
 
-/* ================================
-   APP STATE START
-================================ */
-
-let qrCode = null;
 let logoDataUrl = "";
 let debounceTimer = null;
-
-/* ================================
-   APP STATE END
-================================ */
-
-
-/* ================================
-   EVENT LISTENERS START
-================================ */
+let currentFinalCanvas = null;
 
 hamburger.addEventListener("click", () => {
-  nav.classList.toggle("open");
+  const isOpen = nav.classList.toggle("open");
+  hamburger.setAttribute("aria-expanded", String(isOpen));
 });
 
-nav.addEventListener("click", () => {
-  nav.classList.remove("open");
+nav.addEventListener("click", (event) => {
+  if (event.target.closest("a")) {
+    nav.classList.remove("open");
+    hamburger.setAttribute("aria-expanded", "false");
+  }
 });
 
-generateBtn.addEventListener("click", generateQr);
-downloadBtn.addEventListener("click", downloadQr);
-copyBtn.addEventListener("click", copyQrImage);
+if (miniPreview) {
+  miniPreview.addEventListener("click", () => {
+    qrPreview.scrollIntoView({ behavior: "smooth", block: "center" });
+  });
+}
+downloadBtn.addEventListener("click", handleDownload);
+copyBtn.addEventListener("click", handleCopy);
+resetBtn.addEventListener("click", resetCurrentPreset);
+presetInput.addEventListener("change", applyPreset);
+logoInput.addEventListener("change", handleLogoUpload);
 
 [
   urlInput,
@@ -66,115 +73,113 @@ copyBtn.addEventListener("click", copyQrImage);
   formatInput,
   darkColorInput,
   lightColorInput,
+  cornerColorInput,
   roundedInput,
   frameRoundedInput,
+  frameStyleInput,
+  transparentInput,
   logoSizeInput,
   dotStyleInput,
-  cornerStyleInput
+  cornerStyleInput,
+  paddingInput,
+  borderThicknessInput
 ].forEach((input) => {
-  input.addEventListener("input", debounceGenerate);
+  input.addEventListener("input", handleControlInput);
 });
 
-logoInput.addEventListener("change", handleLogoUpload);
-
-/* ================================
-   EVENT LISTENERS END
-================================ */
-
-
-/* ================================
-   QR GENERATION START
-================================ */
-
-function generateQr() {
+async function generateQr() {
   try {
     setLoading(true);
     setMessage("Generating QR code...");
 
     const settings = getSettings();
+    currentFinalCanvas = await buildFinalCanvas(settings, logoDataUrl);
 
-    qrPreview.innerHTML = "";
-    applyFrameStyle(settings);
-
-    qrCode = new QRCodeStyling({
-      width: settings.size,
-      height: settings.size,
-      type: "canvas",
-      data: settings.url,
-      image: logoDataUrl || undefined,
-      margin: 14,
-
-      qrOptions: {
-        errorCorrectionLevel: "H"
-      },
-
-      dotsOptions: {
-        type: settings.dotStyle,
-        color: settings.darkColor
-      },
-
-      cornersSquareOptions: {
-        type: settings.cornerStyle,
-        color: settings.darkColor
-      },
-
-      cornersDotOptions: {
-        type: settings.cornerDotStyle,
-        color: settings.darkColor
-      },
-
-      backgroundOptions: {
-        color: settings.lightColor
-      },
-
-      imageOptions: {
-        crossOrigin: "anonymous",
-        margin: 8,
-        imageSize: settings.logoSize,
-        hideBackgroundDots: true
-      }
-    });
-
-    qrCode.append(qrPreview);
-
+    qrPreview.replaceChildren(currentFinalCanvas);
+    updateMiniPreview(currentFinalCanvas);
+    updateScanScore(settings, scanScore);
+    syncUiState();
     setMessage("QR code ready.", "success");
   } catch (error) {
-    setMessage(error.message, "error");
+    currentFinalCanvas = null;
+    setMessage(error.message || "Could not generate the QR code.", "error");
   } finally {
     setLoading(false);
   }
 }
 
-/* ================================
-   QR GENERATION END
-================================ */
+async function handleDownload() {
+  try {
+    const settings = getSettings();
+    setLoading(true);
 
+    const canvas = await buildFinalCanvas(settings, logoDataUrl);
+    currentFinalCanvas = canvas;
+    qrPreview.replaceChildren(canvas);
+    updateMiniPreview(canvas);
+    updateScanScore(settings, scanScore);
+    syncUiState();
 
-/* ================================
-   FRAME STYLE START
-================================ */
-
-function applyFrameStyle(settings) {
-  qrPreview.classList.toggle("frame-rounded", settings.roundedFrame);
-  qrPreview.classList.toggle("frame-square", !settings.roundedFrame);
-
-  qrPreview.style.setProperty("--qr-bg-color", settings.lightColor);
+    downloadCanvas(canvas, formatInput.value, settings);
+    setMessage(formatInput.value.toUpperCase() + " downloaded exactly like preview.", "success");
+  } catch (error) {
+    setMessage(error.message || "Could not download the QR code.", "error");
+  } finally {
+    setLoading(false);
+  }
 }
 
-/* ================================
-   FRAME STYLE END
-================================ */
+async function handleCopy() {
+  try {
+    const settings = getSettings();
+    setLoading(true);
 
+    const canvas = await buildFinalCanvas(settings, logoDataUrl);
+    currentFinalCanvas = canvas;
+    qrPreview.replaceChildren(canvas);
+    updateMiniPreview(canvas);
+    updateScanScore(settings, scanScore);
+    syncUiState();
 
-/* ================================
-   LOGO UPLOAD START
-================================ */
+    await copyCanvas(canvas);
+    setMessage("QR design copied.", "success");
+  } catch (error) {
+    setMessage(error.message || "Could not copy the QR code.", "error");
+  } finally {
+    setLoading(false);
+  }
+}
+
+function handleControlInput() {
+  currentFinalCanvas = null;
+  syncUiState();
+  debounceGenerate();
+}
+
+function applyPreset() {
+  const preset = QR_PRESETS[presetInput.value] || QR_PRESETS.modern;
+
+  darkColorInput.value = preset.dark;
+  lightColorInput.value = preset.light;
+  cornerColorInput.value = preset.corner;
+  dotStyleInput.value = preset.dots;
+  cornerStyleInput.value = preset.corners;
+  frameStyleInput.value = preset.frame;
+
+  frameRoundedInput.checked = preset.frame !== "none";
+  roundedInput.checked = true;
+
+  currentFinalCanvas = null;
+  syncUiState();
+  generateQr();
+}
 
 function handleLogoUpload() {
-  const file = logoInput.files?.[0];
+  const file = logoInput.files && logoInput.files[0];
 
   if (!file) {
     logoDataUrl = "";
+    currentFinalCanvas = null;
     generateQr();
     return;
   }
@@ -191,103 +196,36 @@ function handleLogoUpload() {
 
   reader.onload = () => {
     logoDataUrl = reader.result;
+    currentFinalCanvas = null;
     generateQr();
   };
 
   reader.onerror = () => {
     logoDataUrl = "";
+    currentFinalCanvas = null;
     setMessage("Logo could not be loaded.", "error");
   };
 
   reader.readAsDataURL(file);
 }
 
-/* ================================
-   LOGO UPLOAD END
-================================ */
+function resetCurrentPreset() {
+  logoInput.value = "";
+  logoDataUrl = "";
+  logoSizeInput.value = "20";
+  paddingInput.value = "7";
+  borderThicknessInput.value = "2";
+  transparentInput.checked = false;
+  formatInput.value = "png";
+  sizeInput.value = "420";
 
-
-/* ================================
-   DOWNLOAD START
-================================ */
-
-function downloadQr() {
-  try {
-    if (!qrCode) {
-      setMessage("Generate a QR code first.", "error");
-      return;
-    }
-
-    const format = formatInput.value;
-
-    qrCode.download({
-      name: "qr-code",
-      extension: format
-    });
-
-    setMessage(`${format.toUpperCase()} download started.`, "success");
-  } catch (error) {
-    setMessage(error.message, "error");
-  }
-}
-
-/* ================================
-   DOWNLOAD END
-================================ */
-
-
-/* ================================
-   COPY IMAGE START
-================================ */
-
-async function copyQrImage() {
-  try {
-    const canvas = qrPreview.querySelector("canvas");
-
-    if (!canvas) {
-      setMessage("Generate a QR code first.", "error");
-      return;
-    }
-
-    if (!navigator.clipboard || !window.ClipboardItem) {
-      setMessage("Copy image is not supported in this browser.", "error");
-      return;
-    }
-
-    canvas.toBlob(async (blob) => {
-      if (!blob) {
-        setMessage("Could not copy QR image.", "error");
-        return;
-      }
-
-      await navigator.clipboard.write([
-        new ClipboardItem({ "image/png": blob })
-      ]);
-
-      setMessage("QR image copied.", "success");
-    }, "image/png");
-  } catch {
-    setMessage("Copy image is not supported in this browser.", "error");
-  }
-}
-
-/* ================================
-   COPY IMAGE END
-================================ */
-
-
-/* ================================
-   HELPERS START
-================================ */
-
-function debounceGenerate() {
-  clearTimeout(debounceTimer);
-  debounceTimer = setTimeout(generateQr, 300);
+  applyPreset();
+  setMessage("Reset to preset.", "success");
 }
 
 function getSettings() {
   const url = getValidUrl(urlInput.value);
-  const size = clamp(Number(sizeInput.value) || 420, 160, 1200);
+  const size = clamp(Number(sizeInput.value) || 420, 160, 4096);
   const roundedStyling = roundedInput.checked;
 
   return {
@@ -295,56 +233,65 @@ function getSettings() {
     size,
     darkColor: darkColorInput.value,
     lightColor: lightColorInput.value,
+    cornerColor: cornerColorInput.value,
+    transparent: transparentInput.checked,
     logoSize: clamp(Number(logoSizeInput.value) / 100, 0.12, 0.25),
     dotStyle: roundedStyling ? dotStyleInput.value : "square",
     cornerStyle: roundedStyling ? cornerStyleInput.value : "square",
     cornerDotStyle: roundedStyling && cornerStyleInput.value === "dot" ? "dot" : "square",
-    roundedFrame: frameRoundedInput.checked
+    roundedFrame: frameRoundedInput.checked,
+    frameStyle: frameStyleInput.value,
+    customPadding: Number(paddingInput.value) || 0,
+    borderThickness: Number(borderThicknessInput.value) || 0
   };
 }
 
-function getValidUrl(value) {
-  const trimmed = value.trim();
+function debounceGenerate() {
+  clearTimeout(debounceTimer);
+  debounceTimer = setTimeout(generateQr, 280);
+}
 
-  if (!trimmed) {
-    throw new Error("Please enter a URL.");
-  }
+function syncUiState() {
+  logoSizeValue.textContent = logoSizeInput.value + "%";
+  paddingValue.textContent = paddingInput.value + "%";
+  borderThicknessValue.textContent = borderThicknessInput.value + "px";
 
-  const withProtocol = /^https?:\/\//i.test(trimmed)
-    ? trimmed
-    : `https://${trimmed}`;
+  const clampedSize = clamp(Number(sizeInput.value) || 420, 160, 4096);
+  previewSize.textContent = clampedSize + " px";
 
-  return new URL(withProtocol).href;
+  const frameEnabled = frameStyleInput.value !== "none";
+  paddingInput.disabled = !frameEnabled;
+  borderThicknessInput.disabled = !frameEnabled;
+  frameRoundedInput.disabled = !frameEnabled;
 }
 
 function setMessage(text, type = "") {
   message.textContent = text;
-  message.className = `message ${type}`;
+  message.className = type ? "message " + type : "message";
 }
 
 function setLoading(isLoading) {
-  generateBtn.disabled = isLoading;
   downloadBtn.disabled = isLoading;
   copyBtn.disabled = isLoading;
-  generateBtn.textContent = isLoading ? "Generating..." : "Generate";
 }
 
-function clamp(value, min, max) {
-  return Math.min(Math.max(value, min), max);
+function updateMiniPreview(canvas) {
+  if (!canvas || !miniPreview) return;
+
+  const thumbnail = document.createElement("canvas");
+  thumbnail.width = 96;
+  thumbnail.height = 96;
+
+  const ctx = thumbnail.getContext("2d");
+
+  if (!ctx) return;
+
+  ctx.drawImage(canvas, 0, 0, thumbnail.width, thumbnail.height);
+  miniPreview.replaceChildren(thumbnail);
 }
 
-/* ================================
-   HELPERS END
-================================ */
-
-
-/* ================================
-   APP INIT START
-================================ */
-
+document.title = "QR Generator";
 urlInput.value = "https://example.com";
-generateQr();
-
-/* ================================
-   APP INIT END
-================================ */
+sizeInput.value = "420";
+syncUiState();
+applyPreset();
